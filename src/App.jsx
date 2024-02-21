@@ -1,4 +1,5 @@
 import { useState } from "react";
+import StarRating from "./components/StarRating";
 
 function App() {
   const [movies, setMovies] = useState(tempMovieData);
