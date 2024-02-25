@@ -4,7 +4,7 @@ import StarRating from "./components/StarRating";
 const KEY = "712040f4";
 
 function App() {
-  const [query, setQuery] = useState("dark knight");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,13 +28,15 @@ function App() {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       try {
         setIsLoading(true);
         setError("");
 
         const response = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal }
         );
 
         if (!response.ok) throw new Error("Something went wrong ☹");
@@ -45,9 +47,12 @@ function App() {
         // console.log(data);
         setMovies(data.Search);
         setIsLoading(false);
+        setError("");
       } catch (error) {
         // console.error(error.message);
-        setError(error.message, "😐");
+        if (error.name !== "AbortError") {
+          setError(error.message, "😐");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -59,7 +64,12 @@ function App() {
       return;
     }
 
+    handleCloseMovie();
     fetchData();
+
+    return function () {
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -209,6 +219,7 @@ function Movie({ movie, handleSelectMovie }) {
           <p>
             <span>📅</span>
             <span>{movie.Year}</span>
+            <span className="type">{movie.Type.toUpperCase()}</span>
           </p>
         </div>
       </li>
@@ -271,6 +282,33 @@ function MovieDetails({
     handleAddWatched(newWatchedMovie);
     handleCloseMovie();
   }
+
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movie | ${title}`;
+
+      return function () {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
+  );
+
+  useEffect(() => {
+    function func(e) {
+      // console.log(e);
+      if (e.code === "Escape") {
+        handleCloseMovie();
+      }
+    }
+    document.addEventListener("keydown", func);
+
+    return function () {
+      document.removeEventListener("keydown", func);
+    };
+  }, [handleCloseMovie]);
+
   return (
     <div className="details">
       {isLoading ? (
@@ -378,7 +416,7 @@ function WatchedMovieSummary({ watched }) {
             <span>
               {avgRuntime.toFixed(1).endsWith(".0")
                 ? parseInt(avgRuntime)
-                : avgRuntime.toFixed(1)}{" "}
+                : avgRuntime.toFixed(1)}
               min
             </span>
           </p>
