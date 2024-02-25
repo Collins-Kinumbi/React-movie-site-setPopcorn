@@ -214,8 +214,8 @@ body {
   border: none;
   background-color: var(--color-red);
   color: var(--color-background-900);
-  font-size: 0.9rem;
-  font-weight: bold;
+  font-size: 1.3rem;
+  font-weight: bolder;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -242,7 +242,8 @@ body {
 .summary div {
   display: flex;
   align-items: center;
-  gap: 2.4rem;
+  justify-content: left;
+  gap: 1.4rem;
   font-size: 1.6rem;
   font-weight: 600;
 }
@@ -250,7 +251,7 @@ body {
 .summary p {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: 1px;
 }
 
 /* ******* */
