@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import Loader from "./Loader";
 import StarRating from "./StarRating";
-
-const KEY = "712040f4";
+import { KEY } from "../App";
 
 function MovieDetails({
   selectedId,
