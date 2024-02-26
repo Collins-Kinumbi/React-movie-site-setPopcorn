@@ -16,7 +16,7 @@ function WatchedMovieSummary({ watched }) {
             {watched.length < 2 ? (
               <span>{watched.length} movie/series</span>
             ) : (
-              <span>{watched.length} movies</span>
+              <span>{watched.length} movies/series</span>
             )}
           </p>
           <p>
